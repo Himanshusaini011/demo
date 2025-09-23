@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtGallery - Fine Paintings Online</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.0.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.0.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Header Component
+        const Header = ({ onGoHome, currentView }) => {
+            const handleNavClick = (e, anchor) => {
+                if (currentView !== 'home') {
+                    e.preventDefault();
+                    onGoHome(anchor);
+                }
+            };
+
+            return (
+                <header className="bg-white shadow-sm sticky top-0 z-50">
+                    <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+                        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onGoHome()}>
+                            <i className="fas fa-palette text-2xl text-indigo-600"></i>
+                            <h1 className="text-2xl font-bold text-gray-800">ArtGallery</h1>
+                        </div>
+                        <nav className="hidden md:flex space-x-8">
+                            <a href="#" onClick={(e) => handleNavClick(e, '#')} className="text-gray-700 hover:text-indigo-600 transition">Home</a>
+                            <a href="#shop" onClick={(e) => handleNavClick(e, '#shop')} className="text-gray-700 hover:text-indigo-600 transition">Shop</a>
+                            <a href="#footer" onClick={(e) => handleNavClick(e, '#footer')} className="text-gray-700 hover:text-indigo-600 transition">About</a>
+                            <a href="#custom-design" onClick={(e) => handleNavClick(e, '#custom-design')} className="text-gray-700 hover:text-indigo-600 transition">Contact</a>
+                        </nav>
+                        <div className="flex items-center space-x-4">
+                            <button className="text-gray-700 hover:text-indigo-600">
+                                <i className="fas fa-search text-xl"></i>
+                            </button>
+                            <button className="text-gray-700 hover:text-indigo-600 relative">
+                                <i className="fas fa-shopping-cart text-xl"></i>
+                                <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+
+        // Hero Section Component
+        const HeroSection = () => {
+            return (
+                <section className="relative bg-gradient-to-r from-purple-900 via-indigo-900 to-blue-900 text-white overflow-hidden">
+                    <div className="container mx-auto px-4 py-20 md:py-32 relative z-10">
+                        <div className="max-w-2xl">
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6">Discover Unique Paintings</h2>
+                            <p className="text-xl mb-8 opacity-90">Explore our curated collection of original artworks.</p>
+                            <div className="flex space-x-4">
+                                <a href="#categories" className="border border-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-indigo-900 transition">
+                                    Browse Collection
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black/30 to-transparent"></div>
+                </section>
+            );
+        };
+
+        // Painting Card Component
+        const PaintingCard = ({ painting, onQuickView }) => {
+            return (
+                <div id="shop" className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div className="relative group cursor-pointer">
+                        <img 
+                            src={painting.image} 
+                            alt={painting.title} 
+                            className="w-full h-64 object-cover" onClick={() => onQuickView(painting.image)}
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <button onClick={() => onQuickView(painting.image)} className="bg-white text-gray-800 px-4 py-2 rounded-full font-medium hover:bg-gray-100 transition">
+                                Quick View
+                            </button>
+                        </div>
+                    </div>
+                    <div className="p-4">
+                        <h3 className="font-semibold text-gray-800 mb-1">{painting.title}</h3>
+                        <p className="text-gray-600 text-sm mb-2">{painting.artist}</p>
+                        <div className="flex justify-between items-center">
+                            <span className="font-bold text-indigo-600">${painting.price}</span>
+                            <button className="bg-indigo-600 text-white px-3 py-1 rounded-md text-sm hover:bg-indigo-700 transition">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const allPaintings = [
+            { id: 1, title: "Sunset Dreams", artist: "Emma Wilson", price: "299", image: "https://picsum.photos/seed/painting1/400/300.jpg" },
+            { id: 2, title: "Ocean Waves", artist: "Michael Chen", price: "349", image: "https://picsum.photos/seed/painting2/400/300.jpg" },
+            { id: 3, title: "City Lights", artist: "Sophia Martinez", price: "275", image: "https://picsum.photos/seed/painting3/400/300.jpg" },
+            { id: 4, title: "Forest Serenity", artist: "James Rodriguez", price: "315", image: "https://picsum.photos/seed/painting4/400/300.jpg" },
+            { id: 5, title: "Abstract Emotions", artist: "Olivia Taylor", price: "265", image: "https://picsum.photos/seed/painting5/400/300.jpg" },
+            { id: 6, title: "Mountain Majesty", artist: "David Kim", price: "385", image: "https://picsum.photos/seed/painting6/400/300.jpg" },
+            { id: 7, title: "Golden Hour", artist: "Ava Garcia", price: "320", image: "https://picsum.photos/seed/painting7/400/300.jpg" },
+            { id: 8, title: "Urban Jungle", artist: "Noah Brown", price: "290", image: "https://picsum.photos/seed/painting8/400/300.jpg" },
+            { id: 9, title: "Coastal Calm", artist: "Isabella Lee", price: "355", image: "https://picsum.photos/seed/painting9/400/300.jpg" },
+        ];
+
+        // Featured Paintings Section
+        const FeaturedPaintings = ({ onImageClick }) => {
+            const [visiblePaintings, setVisiblePaintings] = React.useState(allPaintings.slice(0, 6));
+
+            const handleLoadMore = () => {
+                const currentLength = visiblePaintings.length;
+                const nextPaintings = allPaintings.slice(currentLength, currentLength + 3);
+                setVisiblePaintings([...visiblePaintings, ...nextPaintings]);
+            };
+
+            const handleShowLess = () => {
+                setVisiblePaintings(allPaintings.slice(0, 6));
+            };
+
+            return (
+                <section className="py-16 bg-gray-50" id="shop">
+                    <div className="container mx-auto px-4">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl font-bold text-gray-800 mb-4">Featured Paintings</h2>
+                            <p className="text-gray-600 max-w-2xl mx-auto">Handpicked selection of stunning original paintings from emerging and established artists.</p>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {visiblePaintings.map(painting => (
+                                <PaintingCard key={painting.id} painting={painting} onQuickView={onImageClick} />
+                            ))}
+                        </div>
+                        <div className="text-center mt-12 space-x-4">
+                            {visiblePaintings.length < allPaintings.length && (
+                                <button onClick={handleLoadMore} className="bg-indigo-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-indigo-700 transition">
+                                    Load More Paintings
+                                </button>
+                            )}
+                            {visiblePaintings.length > 6 && (
+                                <button onClick={handleShowLess} className="bg-gray-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-600 transition">
+                                    Show Less
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Categories Section
+        const Categories = ({ onCategoryClick }) => {
+            const categories = [
+                { id: 1, name: "Abstract", count: 42, image: "https://picsum.photos/seed/abstract/200/150.jpg" },
+                { id: 2, name: "Landscape", count: 38, image: "https://picsum.photos/seed/landscape/200/150.jpg" },
+                { id: 3, name: "Portrait", count: 31, image: "https://picsum.photos/seed/portrait/200/150.jpg" },
+                { id: 4, name: "Still Life", count: 25, image: "https://picsum.photos/seed/stilllife/200/150.jpg" }
+            ];
+
+            return (
+                <section id="categories" className="py-16 bg-white">
+                    <div className="container mx-auto px-4">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl font-bold text-gray-800 mb-4">Browse by Category</h2>
+                            <p className="text-gray-600">Find your perfect piece by exploring our diverse collection of artistic styles.</p>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {categories.map(category => (
+                                <div key={category.id} className="group cursor-pointer" onClick={() => onCategoryClick(category.name)}>
+                                    <div className="relative overflow-hidden rounded-lg mb-4">
+                                        <img 
+                                            src={category.image} 
+                                            alt={category.name} 
+                                            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                        />
+                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <span className="text-white font-semibold text-xl">View All</span>
+                                        </div>
+                                    </div>
+                                    <h3 className="font-semibold text-gray-800 mb-1">{category.name}</h3>
+                                    <p className="text-gray-600 text-sm">{category.count} artworks</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Category Page Component
+        const CategoryPage = ({ categoryName, paintings, onImageClick, onGoHome }) => {
+            return (
+                <section className="py-16 bg-gray-50">
+                    <div className="container mx-auto px-4">
+                        <div className="text-center mb-12">
+                            <button onClick={onGoHome} className="text-indigo-600 hover:text-indigo-800 font-semibold transition mb-4">
+                                &larr; Back to All Sections
+                            </button>
+                            <h2 className="text-3xl font-bold text-gray-800 mb-2">Category: {categoryName}</h2>
+                            <p className="text-gray-600">Showing all artworks in the "{categoryName}" category.</p>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {/* In a real app, you would filter paintings by category */}
+                            {paintings.map(painting => (
+                                <PaintingCard 
+                                    key={painting.id} 
+                                    painting={painting} 
+                                    onQuickView={onImageClick} 
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Image Modal Component
+        const ImageModal = ({ imageUrl, onClose }) => {
+            return (
+                <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50" onClick={onClose}>
+                    <div className="relative w-full h-full" onClick={(e) => e.stopPropagation()}>
+                        <img src={imageUrl} alt="Full view" className="w-full h-full object-contain" />
+                        <button 
+                            onClick={onClose}
+                            className="absolute top-4 right-4 bg-white/50 text-white rounded-full w-12 h-12 flex items-center justify-center text-3xl font-bold hover:bg-white/75 hover:text-black transition"
+                            aria-label="Close image view"
+                        >
+                            &times;
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        // Custom Design Request Section
+        const CustomDesignRequest = () => {
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                // In a real application, you would handle the form data submission here.
+                alert("Thank you for your design submission! We will review it and get back to you shortly.");
+                e.target.reset();
+            };
+
+            return (
+                <section id="custom-design" className="py-16 bg-indigo-900 text-white">
+                    <div className="container mx-auto px-4 text-center">
+                        <h2 className="text-3xl font-bold mb-4">Request a Custom Design</h2>
+                        <p className="mb-8 max-w-2xl mx-auto">Have a unique idea? Describe your vision or upload an existing design, and our artists can bring it to life.</p>
+                        <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-6">
+                            <textarea 
+                                placeholder="Describe your design idea in detail..." 
+                                className="w-full px-4 py-3 rounded-md focus:outline-none text-gray-800 resize-none"
+                                rows="5"
+                                required
+                            />
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <label htmlFor="design-upload" className="w-full sm:w-auto cursor-pointer bg-white text-indigo-700 px-6 py-3 rounded-md font-semibold hover:bg-gray-100 transition">
+                                    <i className="fas fa-upload mr-2"></i>
+                                    Upload Design File
+                                </label>
+                                <input type="file" id="design-upload" className="hidden" />
+                                <button type="submit" className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 px-8 py-3 rounded-md font-semibold transition">
+                                    Submit Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            );
+        };
+
+        // Footer Component
+        const Footer = () => {
+            return (
+                <footer id="footer" className="bg-gray-900 text-gray-300 pt-12 pb-6">
+                    <div className="container mx-auto px-4">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                            <div>
+                                <div className="flex items-center space-x-2 mb-4">
+                                    <i className="fas fa-palette text-2xl text-indigo-400"></i>
+                                    <h3 className="text-xl font-bold text-white">ArtGallery</h3>
+                                </div>
+                                <p className="text-sm leading-relaxed">Connecting art lovers with exceptional talent since 2015.</p>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-white mb-4">Quick Links</h4>
+                                <ul className="space-y-2 text-sm">
+                                    <li><a href="#" className="hover:text-white transition">Home</a></li>
+                                    <li><a href="#shop" className="hover:text-white transition">Shop</a></li>
+                                    <li><a href="#footer" className="hover:text-white transition">about</a></li>
+                                    <li><a href="#" className="hover:text-white transition">Contact</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-white mb-4">Customer Service</h4>
+                                <ul className="space-y-2 text-sm">
+                                    <li><a href="#" className="hover:text-white transition">FAQs</a></li>
+                                    <li><a href="#" className="hover:text-white transition">Shipping Policy</a></li>
+                                    <li><a href="#" className="hover:text-white transition">Returns & Exchanges</a></li>
+                                    <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-white mb-4">Connect With Us</h4>
+                                <div className="flex space-x-4 mb-4">
+                                    <a href="#" className="text-gray-300 hover:text-white transition"><i className="fab fa-facebook-f"></i></a>
+                                    <a href="#" className="text-gray-300 hover:text-white transition"><i className="fab fa-instagram"></i></a>
+                                    <a href="#" className="text-gray-300 hover:text-white transition"><i className="fab fa-twitter"></i></a>
+                                    <a href="#" className="text-gray-300 hover:text-white transition"><i className="fab fa-pinterest"></i></a>
+                                </div>
+                                <p className="text-sm">Email: info@artgallery.com</p>
+                                <p className="text-sm">Phone: +1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div className="pt-6 border-t border-gray-800 text-center text-sm">
+                            <p>&copy; 2023 ArtGallery. All rights reserved.</p>
+                        </div>
+                    </div>
+                </footer>
+            );
+        };
+
+        // Main App Component
+        const App = () => {
+            const [isModalOpen, setIsModalOpen] = React.useState(false);
+            const [selectedImage, setSelectedImage] = React.useState('');
+            const [currentView, setCurrentView] = React.useState('home');
+            const [selectedCategory, setSelectedCategory] = React.useState('');
+
+            const openModal = (imageUrl) => {
+                setSelectedImage(imageUrl);
+                setIsModalOpen(true);
+            };
+
+            const closeModal = () => {
+                setIsModalOpen(false);
+                setSelectedImage('');
+            };
+
+            const handleCategoryClick = (categoryName) => {
+                setSelectedCategory(categoryName);
+                setCurrentView('category');
+            };
+
+            const handleGoHome = (anchor) => {
+                setCurrentView('home');
+                setSelectedCategory('');
+                if (anchor) {
+                    // Use a timeout to ensure the home view has rendered before scrolling
+                    setTimeout(() => {
+                        const element = document.querySelector(anchor);
+                        if (element) {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }, 0);
+                }
+            };
+
+            React.useEffect(() => {
+                if (currentView === 'category') window.scrollTo(0, 0);
+            }, [currentView]);
+
+            return (
+                <>
+                    <Header onGoHome={handleGoHome} currentView={currentView} />
+                    {currentView === 'home' ? (
+                        <>
+                            <HeroSection />
+                            <FeaturedPaintings onImageClick={openModal} />
+                            <Categories onCategoryClick={handleCategoryClick} />
+                            <CustomDesignRequest />
+                        </>
+                    ) : (
+                        <CategoryPage 
+                            categoryName={selectedCategory}
+                            paintings={allPaintings}
+                            onImageClick={openModal}
+                            onGoHome={handleGoHome}
+                        />
+                    )}
+                    <Footer />
+                    {isModalOpen && <ImageModal imageUrl={selectedImage} onClose={closeModal} />}
+                </>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
