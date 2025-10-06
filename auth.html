@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Signup - ArtGallery</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.0.0/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.0.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const AuthPage = () => {
+            const [isLogin, setIsLogin] = React.useState(true);
+            const [email, setEmail] = React.useState('');
+            const [password, setPassword] = React.useState('');
+            const [name, setName] = React.useState('');
+
+            const handleAuthAction = async (e) => {
+                e.preventDefault();
+
+                // In a real application, you would send this data to your backend for authentication.
+                if (isLogin) {
+                    // Simulate login
+                    alert(`Logging in with Email: ${email}, Password: ${password}`);
+                } else {
+                    // Simulate signup
+                    alert(`Signing up with Name: ${name}, Email: ${email}, Password: ${password}`);
+                }
+            };
+
+            return (
+                <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                    <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+                            {isLogin ? 'Login' : 'Sign Up'}
+                        </h2>
+
+                        <form onSubmit={handleAuthAction} className="space-y-4">
+                            {!isLogin && (
+                                <div>
+                                    <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2">
+                                        Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        placeholder="Your Name"
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            )}
+                            <div>
+                                <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+                                    Email
+                                </label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    placeholder="Your Email"
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
+                                    Password
+                                </label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    placeholder="Your Password"
+                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <button
+                                    className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                                    type="submit"
+                                >
+                                    {isLogin ? 'Login' : 'Sign Up'}
+                                </button>
+                                <button
+                                    type="button"
+                                    className="inline-block align-baseline font-bold text-sm text-indigo-600 hover:text-indigo-800"
+                                    onClick={() => setIsLogin(!isLogin)}
+                                >
+                                    {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Login'}
+                                </button>
+                            </div>
+                        </form>
+                        <div className="text-center mt-4">
+                            <a href="./index.html" className="inline-block align-baseline font-bold text-sm text-indigo-500 hover:text-indigo-800">
+                                &larr; Back to Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            return <AuthPage />;
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

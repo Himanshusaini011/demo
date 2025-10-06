@@ -21,13 +21,15 @@
     <script type="text/babel">
         // Header Component
         const Header = ({ onGoHome, currentView }) => {
+            const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+
             const handleNavClick = (e, anchor) => {
                 if (currentView !== 'home') {
                     e.preventDefault();
                     onGoHome(anchor);
                 }
             };
-
+            
             return (
                 <header className="bg-white shadow-sm sticky top-0 z-50">
                     <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -42,13 +44,13 @@
                             <a href="#custom-design" onClick={(e) => handleNavClick(e, '#custom-design')} className="text-gray-700 hover:text-indigo-600 transition">Contact</a>
                         </nav>
                         <div className="flex items-center space-x-4">
-                            <button className="text-gray-700 hover:text-indigo-600">
-                                <i className="fas fa-search text-xl"></i>
-                            </button>
-                            <button className="text-gray-700 hover:text-indigo-600 relative">
+                            <a href="./cart.html" className="text-gray-700 hover:text-indigo-600 relative">
                                 <i className="fas fa-shopping-cart text-xl"></i>
-                                <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
-                            </button>
+                                <span className="absolute -top-2 -right-2 bg-indigo-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{cartItems.length}</span>
+                            </a>
+                            <a href="./auth.html" className="text-gray-700 hover:text-indigo-600">
+                                <i className="fas fa-user-circle text-xl"></i>
+                            </a>
                         </div>
                     </div>
                 </header>
@@ -76,7 +78,7 @@
         };
 
         // Painting Card Component
-        const PaintingCard = ({ painting, onQuickView }) => {
+        const PaintingCard = ({ painting, onQuickView, onAddToCart }) => {
             return (
                 <div id="shop" className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                     <div className="relative group cursor-pointer">
@@ -86,7 +88,12 @@
                             className="w-full h-64 object-cover" onClick={() => onQuickView(painting.image)}
                         />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                            <button onClick={() => onQuickView(painting.image)} className="bg-white text-gray-800 px-4 py-2 rounded-full font-medium hover:bg-gray-100 transition">
+                            <button onClick={() => {
+                                    const paintingString = JSON.stringify(painting);
+                                    window.location.href = `./painting-details.html?painting=${paintingString}`;
+                                }}
+                                className="bg-white text-gray-800 px-4 py-2 rounded-full font-medium hover:bg-gray-100 transition"
+                            >
                                 Quick View
                             </button>
                         </div>
@@ -94,9 +101,9 @@
                     <div className="p-4">
                         <h3 className="font-semibold text-gray-800 mb-1">{painting.title}</h3>
                         <p className="text-gray-600 text-sm mb-2">{painting.artist}</p>
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center"> 
                             <span className="font-bold text-indigo-600">${painting.price}</span>
-                            <button className="bg-indigo-600 text-white px-3 py-1 rounded-md text-sm hover:bg-indigo-700 transition">
+                            <button onClick={() => onAddToCart(painting)} className="bg-indigo-600 text-white px-3 py-1 rounded-md text-sm hover:bg-indigo-700 transition">
                                 Add to Cart
                             </button>
                         </div>
@@ -118,7 +125,7 @@
         ];
 
         // Featured Paintings Section
-        const FeaturedPaintings = ({ onImageClick }) => {
+        const FeaturedPaintings = ({ onImageClick, onAddToCart }) => {
             const [visiblePaintings, setVisiblePaintings] = React.useState(allPaintings.slice(0, 6));
 
             const handleLoadMore = () => {
@@ -131,7 +138,7 @@
                 setVisiblePaintings(allPaintings.slice(0, 6));
             };
 
-            return (
+            return ( 
                 <section className="py-16 bg-gray-50" id="shop">
                     <div className="container mx-auto px-4">
                         <div className="text-center mb-12">
@@ -140,12 +147,12 @@
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                             {visiblePaintings.map(painting => (
-                                <PaintingCard key={painting.id} painting={painting} onQuickView={onImageClick} />
+                                <PaintingCard key={painting.id} painting={painting} onQuickView={onImageClick} onAddToCart={onAddToCart} />
                             ))}
                         </div>
                         <div className="text-center mt-12 space-x-4">
                             {visiblePaintings.length < allPaintings.length && (
-                                <button onClick={handleLoadMore} className="bg-indigo-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-indigo-700 transition">
+                                <button onClick={handleLoadMore} className="bg-indigo-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-indigo-700 transition"> 
                                     Load More Paintings
                                 </button>
                             )}
@@ -161,7 +168,7 @@
         };
 
         // Categories Section
-        const Categories = ({ onCategoryClick }) => {
+        const Categories = ({ onCategoryClick }) => { 
             const categories = [
                 { id: 1, name: "Abstract", count: 42, image: "https://picsum.photos/seed/abstract/200/150.jpg" },
                 { id: 2, name: "Landscape", count: 38, image: "https://picsum.photos/seed/landscape/200/150.jpg" },
@@ -192,7 +199,7 @@
                                     <h3 className="font-semibold text-gray-800 mb-1">{category.name}</h3>
                                     <p className="text-gray-600 text-sm">{category.count} artworks</p>
                                 </div>
-                            ))}
+                            ))} 
                         </div>
                     </div>
                 </section>
@@ -200,7 +207,7 @@
         };
 
         // Category Page Component
-        const CategoryPage = ({ categoryName, paintings, onImageClick, onGoHome }) => {
+        const CategoryPage = ({ categoryName, paintings, onImageClick, onGoHome, onAddToCart }) => {
             return (
                 <section className="py-16 bg-gray-50">
                     <div className="container mx-auto px-4">
@@ -217,7 +224,8 @@
                                 <PaintingCard 
                                     key={painting.id} 
                                     painting={painting} 
-                                    onQuickView={onImageClick} 
+                                    onQuickView={onImageClick}
+                                    onAddToCart={onAddToCart}
                                 />
                             ))}
                         </div>
@@ -284,7 +292,7 @@
         // Footer Component
         const Footer = () => {
             return (
-                <footer id="footer" className="bg-gray-900 text-gray-300 pt-12 pb-6">
+                <footer id="footer" className="bg-gray-900 text-gray-300 pt-12 pb-6"> 
                     <div className="container mx-auto px-4">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                             <div>
@@ -339,6 +347,21 @@
             const [currentView, setCurrentView] = React.useState('home');
             const [selectedCategory, setSelectedCategory] = React.useState('');
 
+            // Cart state management
+            const [cart, setCart] = React.useState([]);
+
+            // Load cart from localStorage on initial render
+            React.useEffect(() => {
+                const savedCart = JSON.parse(localStorage.getItem('cart') || '[]');
+                setCart(savedCart);
+            }, []);
+
+            const handleAddToCart = (painting) => {
+                const newCart = [...cart, painting];
+                setCart(newCart);
+                localStorage.setItem('cart', JSON.stringify(newCart));
+            };
+
             const openModal = (imageUrl) => {
                 setSelectedImage(imageUrl);
                 setIsModalOpen(true);
@@ -378,7 +401,7 @@
                     {currentView === 'home' ? (
                         <>
                             <HeroSection />
-                            <FeaturedPaintings onImageClick={openModal} />
+                            <FeaturedPaintings onImageClick={openModal} onAddToCart={handleAddToCart} />
                             <Categories onCategoryClick={handleCategoryClick} />
                             <CustomDesignRequest />
                         </>
@@ -386,6 +409,7 @@
                         <CategoryPage 
                             categoryName={selectedCategory}
                             paintings={allPaintings}
+                            onAddToCart={handleAddToCart}
                             onImageClick={openModal}
                             onGoHome={handleGoHome}
                         />
@@ -393,7 +417,7 @@
                     <Footer />
                     {isModalOpen && <ImageModal imageUrl={selectedImage} onClose={closeModal} />}
                 </>
-            );
+            ); 
         };
 
         ReactDOM.render(<App />, document.getElementById('root'));
